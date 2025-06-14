@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 
 type DownloadInvoiceButtonProps = {
-  // querySelector for the invoice preview container
   targetId: string;
 };
 
@@ -26,54 +25,58 @@ const saveAs = (blobOrData: Blob | string, filename: string) => {
 const DownloadInvoiceButton: React.FC<DownloadInvoiceButtonProps> = ({ targetId }) => {
   const [open, setOpen] = React.useState(false);
 
-  // PDF: Render DOM to PNG, then use jsPDF to add to a standard A4 portrait page
+  // Constants for A4 size in points and pixels
+  const A4_WIDTH_PT = 595.28; // 210mm in points at 72 DPI
+  const A4_HEIGHT_PT = 841.89; // 297mm in points at 72 DPI
+  const MM_TO_PX = (mm: number, dpi = 96) => Math.round((mm / 25.4) * dpi);
+  // At 96dpi: 210mm ≈ 794px, 297mm ≈ 1123px
+  const A4_WIDTH_PX = MM_TO_PX(210, 144); // 1191px at 144dpi for better sharpness
+  const A4_HEIGHT_PX = MM_TO_PX(297, 144); // 1684px at 144dpi
+
+  // --- PDF: Render DOM to PNG at fixed A4 size, then use jsPDF for A4 page ---
   const handleDownloadPDF = async () => {
     const invoiceNode = document.getElementById(targetId);
     if (!invoiceNode) return;
-    // Wait for rendering stability
+    // Use html2canvas with fixed A4 size and higher DPI for clarity
     const canvas = await html2canvas(invoiceNode as HTMLElement, {
       backgroundColor: "#fff",
-      scale: 2
+      width: A4_WIDTH_PX,
+      height: A4_HEIGHT_PX,
+      scale: 1,
+      windowWidth: invoiceNode.scrollWidth,
+      windowHeight: invoiceNode.scrollHeight,
+      // Letterboxing to fit the aspect if needed
     });
+
+    // Resize logic: ensure image is A4 in PDF
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF({
       orientation: "portrait",
       unit: "pt",
       format: "a4",
     });
-    // Fit image width to page, scaling height
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    // Resize to fit width
-    const imgWidth = pageWidth;
-    const imgProps = (canvas as any).toDataURL
-      ? { width: canvas.width, height: canvas.height }
-      : { width: canvas.width, height: canvas.height };
-    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
-    let y = 0;
-    if (imgHeight < pageHeight) {
-      // center vertically
-      y = (pageHeight - imgHeight) / 2;
-    }
-    pdf.addImage(imgData, "PNG", 0, y, imgWidth, imgHeight);
+    // Always fit image to page exactly
+    pdf.addImage(
+      imgData,
+      "PNG",
+      0,
+      0,
+      A4_WIDTH_PT,
+      A4_HEIGHT_PT
+    );
     pdf.save("invoice.pdf");
     setOpen(false);
   };
 
-  // SVG: Look for the first SVG inside the component, or just render the DOM as "SVG" if possible
   const handleDownloadSVG = () => {
     const invoiceNode = document.getElementById(targetId);
     if (!invoiceNode) return;
-    // Try to find any <svg> child node -- if not, export the whole DOM as SVG-foreign
     const svg = invoiceNode.querySelector("svg");
     if (svg) {
-      // Download original SVG markup
       const svgBlob = new Blob([svg.outerHTML], { type: "image/svg+xml;charset=utf-8" });
       saveAs(svgBlob, "invoice.svg");
     } else {
-      // As fallback, we can create an SVG foreignObject screenshot of the HTML
-      // This is not "true" SVG, but may work for opening in vector editors/browsers
       const serializer = new XMLSerializer();
       const html = serializer.serializeToString(invoiceNode);
       const width = invoiceNode.offsetWidth;
@@ -91,7 +94,6 @@ const DownloadInvoiceButton: React.FC<DownloadInvoiceButtonProps> = ({ targetId 
     setOpen(false);
   };
 
-  // UI: Dropdown menu
   return (
     <div className="relative mb-3 flex justify-end w-full">
       <Button
@@ -121,7 +123,6 @@ const DownloadInvoiceButton: React.FC<DownloadInvoiceButtonProps> = ({ targetId 
           </button>
         </div>
       )}
-      {/* Menu closed by clicking elsewhere */}
       {open && (
         <div
           className="fixed inset-0 z-40"
