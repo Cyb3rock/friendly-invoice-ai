@@ -2,8 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
-
+/* Modern minimalist system overrides */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -90,14 +89,31 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  html, body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    font-smooth: always;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    min-height: 100dvh;
+    padding: 0;
+    margin: 0;
+  }
 }
 
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
 
-  body {
-    @apply bg-background text-foreground;
+  button, input, select, textarea {
+    @apply outline-none ring-0 focus:ring-2 focus:ring-primary/20 transition-shadow;
+    font-weight: 500;
   }
 }

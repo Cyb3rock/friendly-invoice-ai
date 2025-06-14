@@ -245,12 +245,12 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
   // --- END Signature preview logic ---
 
   return (
-    <div className="font-inter bg-white rounded-2xl border border-border shadow-xl p-8 min-w-[384px] max-w-lg mx-auto mt-4 mb-6">
+    <div className="font-inter bg-white rounded-3xl border border-border/30 shadow-md p-6 min-w-[320px] max-w-lg mx-auto mt-7 mb-10 transition-all duration-200">
       {/* Header */}
-      <header className="flex items-start justify-between pb-6 border-b border-border mb-4">
+      <header className="flex items-start justify-between pb-5 border-b border-border/20 mb-3">
         <div>
-          <div className="text-2xl font-bold tracking-tighter text-primary">{t.invoice}</div>
-          <div className="text-xs text-muted-foreground">
+          <div className="text-2xl font-bold tracking-tight text-foreground">{t.invoice}</div>
+          <div className="text-xs text-muted-foreground mt-1">
             #{data.invoiceNumber || "0001"}
             {data.poNumber && <span className="ml-4">{t.po}: {data.poNumber}</span>}
           </div>
@@ -260,22 +260,22 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
           </div>
         </div>
         {data.from.logoUrl ? (
-          <img src={data.from.logoUrl} alt="Logo" className="h-12 rounded bg-gray-100 border shadow" />
+          <img src={data.from.logoUrl} alt="Logo" className="h-12 rounded-lg bg-gray-100 border border-border/10 shadow-sm" />
         ) : (
-          <div className="h-12 w-28 flex items-center justify-center bg-gray-100 border rounded text-xs text-muted-foreground font-semibold">{t.noLogo}</div>
+          <div className="h-12 w-28 flex items-center justify-center bg-gray-50 border border-border/10 rounded-lg text-xs text-muted-foreground font-semibold">{t.noLogo}</div>
         )}
       </header>
       {/* From/To */}
-      <div className="flex flex-col md:flex-row justify-between text-xs gap-4 mb-2">
+      <div className="flex flex-col md:flex-row justify-between text-xs gap-4 mb-3">
         <div>
-          <div className="uppercase font-semibold text-foreground/70 mb-1">{t.from}</div>
+          <div className="uppercase font-semibold text-muted-foreground/60 mb-1">{t.from}</div>
           <div className="font-bold">{data.from.company || "--"}</div>
           <div>{data.from.address}</div>
           <div>{data.from.phone}</div>
           <div>{data.from.email}</div>
         </div>
         <div>
-          <div className="uppercase font-semibold text-foreground/70 mb-1">{t.billTo}</div>
+          <div className="uppercase font-semibold text-muted-foreground/60 mb-1">{t.billTo}</div>
           <div className="font-bold">{data.to.name || "--"}</div>
           <div>{data.to.address}</div>
           <div>{data.to.phone}</div>
@@ -283,14 +283,14 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
         </div>
       </div>
       {/* Items Table */}
-      <div className="overflow-x-auto mt-6">
-        <table className="w-full border rounded-t overflow-hidden text-sm">
+      <div className="overflow-x-auto mt-5">
+        <table className="w-full rounded-lg overflow-hidden text-sm border-separate border-spacing-0">
           <thead>
-            <tr className="bg-muted/50">
-              <th className="text-left font-semibold px-3 py-2 w-1/2">{t.description}</th>
-              <th className="text-right font-semibold px-3 py-2">{t.qty}</th>
-              <th className="text-right font-semibold px-3 py-2">{t.rate}</th>
-              <th className="text-right font-semibold px-3 py-2">{t.amount}</th>
+            <tr className="bg-muted/80">
+              <th className="text-left font-semibold px-3 py-1.5 w-1/2">{t.description}</th>
+              <th className="text-right font-semibold px-3 py-1.5">{t.qty}</th>
+              <th className="text-right font-semibold px-3 py-1.5">{t.rate}</th>
+              <th className="text-right font-semibold px-3 py-1.5">{t.amount}</th>
             </tr>
           </thead>
           <tbody>
@@ -302,24 +302,24 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
               </tr>
             )}
             {data.lineItems.map((item, idx) => (
-              <tr key={idx}>
-                <td className="px-3 py-2">{item.description}</td>
-                <td className="text-right px-3 py-2">{item.quantity}</td>
-                <td className="text-right px-3 py-2">
+              <tr key={idx} className="hover:bg-muted/30 transition">
+                <td className="px-3 py-2 border-b border-border/10">{item.description}</td>
+                <td className="text-right px-3 py-2 border-b border-border/10">{item.quantity}</td>
+                <td className="text-right px-3 py-2 border-b border-border/10">
                   {symbol}
                   {item.rate.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </td>
-                <td className="text-right px-3 py-2">
+                <td className="text-right px-3 py-2 border-b border-border/10">
                   {symbol}
                   {(item.quantity * item.rate).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </td>
               </tr>
             ))}
-            <tr>
-              <td colSpan={4}><div className="border-b border-border" /></td>
-            </tr>
           </tbody>
-          <tfoot className="text-base">
+          <tfoot>
+            <tr>
+              <td colSpan={4}><div className="border-b border-border/10" /></td>
+            </tr>
             <tr>
               <td colSpan={3} className="text-right px-3 py-2">{t.subtotal}</td>
               <td className="text-right px-3 py-2 font-medium">{symbol}{subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
@@ -342,8 +342,8 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
         </table>
       </div>
       {/* Payment info */}
-      <div className="mt-6 mb-2">
-        <div className="flex gap-5 items-center flex-wrap">
+      <div className="mt-6 mb-3">
+        <div className="flex gap-4 items-center flex-wrap">
           <span className="font-semibold text-sm">{t.paymentDue}</span>
           <span>{data.paymentDue}</span>
         </div>
@@ -370,8 +370,8 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
         )}
       </div>
       {data.notes && (
-        <div className="mt-2 border-t border-muted-foreground/10 pt-3 text-sm text-muted-foreground">
-          <div className="font-medium text-foreground/80 mb-1">{t.notes}</div>
+        <div className="mt-2 border-t border-muted-foreground/10 pt-2.5 text-sm text-muted-foreground/90">
+          <div className="font-medium text-foreground mb-1">{t.notes}</div>
           <div>{data.notes}</div>
         </div>
       )}
