@@ -11,6 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import SignatureField, { SignatureData } from "./SignatureField";
 
 type InvoiceLineItem = {
   description: string;
@@ -323,6 +324,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
           onChange={e => onChange({ ...value, copyright: e.target.value })}
           placeholder="© 2024 Your Company, Inc."
         />
+      </div>
+
+      {/* Digital Signature */}
+      <div className="mt-3">
+        <div className="font-semibold text-base mb-1">Digital Signature</div>
+        <SignatureField value={value.digitalSignature ?? null} onChange={handleSignatureChange} />
       </div>
       {/* Spacer for sticky preview */}
       <div className="pb-40" />

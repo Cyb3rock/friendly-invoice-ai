@@ -51,6 +51,47 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
   const afterTax = subtotal + taxAmount;
   const afterDiscount = Math.max(0, afterTax - data.discount);
 
+  // --- Signature preview logic ---
+  let signatureArea: React.ReactNode = null;
+  const signature = (data as any).digitalSignature as
+    | { type: "drawn"; value: string }
+    | { type: "image"; value: string }
+    | null
+    | undefined;
+  if (signature && signature.type === "drawn" && signature.value) {
+    signatureArea = (
+      <div className="mt-2 flex flex-col items-end pr-2">
+        <div
+          style={{
+            fontFamily: "'Dancing Script', cursive",
+            fontSize: 32,
+            fontWeight: 700,
+            color: "#5b4b19",
+            borderBottom: "1px dotted #e0c068",
+            display: "inline-block",
+            minWidth: "160px"
+          }}
+        >
+          {signature.value}
+        </div>
+        <span className="text-xs text-muted-foreground">Digital Signature</span>
+      </div>
+    );
+  } else if (signature && signature.type === "image" && signature.value) {
+    signatureArea = (
+      <div className="mt-2 flex flex-col items-end pr-2">
+        <img
+          src={signature.value}
+          alt="Digital signature"
+          className="h-14 object-contain border rounded shadow-sm bg-white"
+          style={{ maxWidth: "180px" }}
+        />
+        <span className="text-xs text-muted-foreground">Digital Signature</span>
+      </div>
+    );
+  }
+  // --- END Signature preview logic ---
+
   return (
     <div className="font-inter bg-white rounded-2xl border border-border shadow-xl p-8 min-w-[384px] max-w-lg mx-auto mt-4 mb-6">
       {/* Header */}
@@ -184,6 +225,9 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
         companySlogan={data.companySlogan}
         copyright={data.copyright}
       />
+
+      {/* Digital signature section */}
+      {signatureArea}
     </div>
   );
 };

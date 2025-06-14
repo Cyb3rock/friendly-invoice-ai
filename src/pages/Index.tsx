@@ -1,4 +1,3 @@
-
 import React from "react";
 import InvoiceForm from "@/components/InvoiceForm";
 import InvoicePreview from "@/components/InvoicePreview";
@@ -35,6 +34,7 @@ const initialInvoice = {
   thankYouMessage: "Thank you for your business!",
   companySlogan: "",
   copyright: "",
+  digitalSignature: null, // Added digitalSignature field for signature data
 };
 
 const PDF_TARGET_ID = "invoice-preview-panel";
@@ -75,6 +75,7 @@ const Index = () => {
                     ? invoice.dueDate.toLocaleDateString()
                     : invoice.dueDate
                   : "",
+                digitalSignature: invoice.digitalSignature ?? null, // forward signature
               }}
             />
           </div>
