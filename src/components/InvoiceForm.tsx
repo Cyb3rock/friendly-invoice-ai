@@ -66,7 +66,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
         }
       />
       {/* Invoice/Common Info */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium text-muted-foreground mb-1">Invoice Number</label>
           <Input
@@ -85,7 +85,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="text-sm font-medium text-muted-foreground mb-1">Issue Date</label>
           <Popover open={showIssuePicker} onOpenChange={setShowIssuePicker}>
@@ -142,7 +142,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
       {/* Your business info */}
       <div>
         <div className="font-semibold text-base mb-1 mt-4">Your Business Info</div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium">Company</label>
             <Input
@@ -179,7 +179,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
       {/* Client info */}
       <div>
         <div className="font-semibold text-base mb-1 mt-4">Client Info</div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium">Name</label>
             <Input
@@ -241,7 +241,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
         </div>
       </div>
       {/* Tax/Discount */}
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
           <label className="text-sm font-medium">Tax Rate %</label>
           <Input
