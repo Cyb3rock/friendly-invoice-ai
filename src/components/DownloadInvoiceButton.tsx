@@ -25,30 +25,16 @@ const saveAs = (blobOrData: Blob | string, filename: string) => {
 const DownloadInvoiceButton: React.FC<DownloadInvoiceButtonProps> = ({ targetId }) => {
   const [open, setOpen] = React.useState(false);
 
-  // Constants for A4 size in points and pixels
-  const A4_WIDTH_PT = 595.28; // 210mm in points at 72 DPI
-  const A4_HEIGHT_PT = 841.89; // 297mm in points at 72 DPI
-  const MM_TO_PX = (mm: number, dpi = 96) => Math.round((mm / 25.4) * dpi);
-  // At 96dpi: 210mm ≈ 794px, 297mm ≈ 1123px
-  const A4_WIDTH_PX = MM_TO_PX(210, 144); // 1191px at 144dpi for better sharpness
-  const A4_HEIGHT_PX = MM_TO_PX(297, 144); // 1684px at 144dpi
-
-  // --- PDF: Render DOM to PNG at fixed A4 size, then use jsPDF for A4 page ---
+  // PDF: Render DOM to PNG, then use jsPDF to add to a standard A4 portrait page
   const handleDownloadPDF = async () => {
     const invoiceNode = document.getElementById(targetId);
     if (!invoiceNode) return;
-    // Use html2canvas with fixed A4 size and higher DPI for clarity
+    // Render at natural/intrinsic size (no forced A4 dimension!)
     const canvas = await html2canvas(invoiceNode as HTMLElement, {
       backgroundColor: "#fff",
-      width: A4_WIDTH_PX,
-      height: A4_HEIGHT_PX,
-      scale: 1,
-      windowWidth: invoiceNode.scrollWidth,
-      windowHeight: invoiceNode.scrollHeight,
-      // Letterboxing to fit the aspect if needed
+      scale: 2,
     });
 
-    // Resize logic: ensure image is A4 in PDF
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF({
       orientation: "portrait",
@@ -56,15 +42,18 @@ const DownloadInvoiceButton: React.FC<DownloadInvoiceButtonProps> = ({ targetId 
       format: "a4",
     });
 
-    // Always fit image to page exactly
-    pdf.addImage(
-      imgData,
-      "PNG",
-      0,
-      0,
-      A4_WIDTH_PT,
-      A4_HEIGHT_PT
-    );
+    // Fit image width to A4, scale proportionally, center vertically if needed
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let y = 0;
+    if (imgHeight < pageHeight) {
+      // center vertically
+      y = (pageHeight - imgHeight) / 2;
+    }
+    pdf.addImage(imgData, "PNG", 0, y, imgWidth, imgHeight);
     pdf.save("invoice.pdf");
     setOpen(false);
   };
