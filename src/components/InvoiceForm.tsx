@@ -1,4 +1,3 @@
-
 import React from "react";
 import InvoiceLineItemRow from "./InvoiceLineItemRow";
 import LogoUpload from "./LogoUpload";
@@ -13,6 +12,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import SignatureField, { SignatureData } from "./SignatureField";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 type InvoiceLineItem = {
   description: string;
@@ -275,11 +281,22 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
       <div>
         <div className="font-semibold text-base mb-1 mt-4">Payment Details</div>
         <label className="text-sm font-medium">Payment Methods</label>
-        <Input
+        <Select
           value={value.paymentMethods}
-          onChange={e => onChange({ ...value, paymentMethods: e.target.value })}
-          placeholder="Bank transfer, Card, PayPal..."
-        />
+          onValueChange={selected =>
+            onChange({ ...value, paymentMethods: selected })
+          }
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select payment method" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Bank Transfers">Bank Transfers</SelectItem>
+            <SelectItem value="UPI">UPI</SelectItem>
+            <SelectItem value="Credit and Debit Cards">Credit and Debit Cards</SelectItem>
+            <SelectItem value="Cash">Cash</SelectItem>
+          </SelectContent>
+        </Select>
         <label className="text-sm font-medium mt-2">Payment Due</label>
         <Input
           value={value.paymentDue}
@@ -345,4 +362,3 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
 };
 
 export default InvoiceForm;
-
