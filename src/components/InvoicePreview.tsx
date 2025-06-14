@@ -2,6 +2,7 @@
 import React from "react";
 import ThankYouFooter from "./ThankYouFooter";
 
+// Add digitalSignature to InvoiceData type
 type InvoiceData = {
   invoiceNumber: string;
   issueDate: string; // formatted
@@ -35,6 +36,7 @@ type InvoiceData = {
   thankYouMessage: string;
   companySlogan?: string;
   copyright?: string;
+  digitalSignature?: { type: "drawn"; value: string } | { type: "image"; value: string } | null;
 };
 
 type Props = {
