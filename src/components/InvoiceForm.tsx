@@ -1,7 +1,6 @@
 import React from "react";
 import InvoiceLineItemRow from "./InvoiceLineItemRow";
 import LogoUpload from "./LogoUpload";
-import AddressAutocomplete from "./AddressAutocomplete";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CalendarIcon, Link, Mail, PenLine } from "lucide-react";
@@ -154,11 +153,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
           </div>
           <div>
             <label className="text-sm font-medium">Address</label>
-            <AddressAutocomplete
+            <Input
               value={value.from.address}
-              onChange={address =>
-                onChange({ ...value, from: { ...value.from, address } })
-              }
+              onChange={e => onChange({ ...value, from: { ...value.from, address: e.target.value } })}
               placeholder="Business address"
             />
           </div>
@@ -193,9 +190,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
           </div>
           <div>
             <label className="text-sm font-medium">Address</label>
-            <AddressAutocomplete
+            <Input
               value={value.to.address}
-              onChange={address => onChange({ ...value, to: { ...value.to, address } })}
+              onChange={e => onChange({ ...value, to: { ...value.to, address: e.target.value } })}
               placeholder="Client address"
             />
           </div>
