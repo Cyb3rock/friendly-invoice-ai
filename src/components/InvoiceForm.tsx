@@ -21,13 +21,51 @@ import {
 } from "@/components/ui/select";
 
 const CURRENCIES: { code: string; symbol: string; name: string }[] = [
-  { code: "USD", symbol: "$", name: "US Dollar" },
-  { code: "EUR", symbol: "€", name: "Euro" },
-  { code: "GBP", symbol: "£", name: "British Pound" },
-  { code: "INR", symbol: "₹", name: "Indian Rupee" },
-  { code: "CAD", symbol: "C$", name: "Canadian Dollar" },
-  { code: "AUD", symbol: "A$", name: "Australian Dollar" },
-  // Add more as needed
+  { code: "INR", symbol: "₹", name: "Indian Rupee (India)" },
+  { code: "USD", symbol: "$", name: "US Dollar (United States)" },
+  { code: "GBP", symbol: "£", name: "British Pound (United Kingdom)" },
+  { code: "AUD", symbol: "A$", name: "Australian Dollar (Australia)" },
+  { code: "CAD", symbol: "C$", name: "Canadian Dollar (Canada)" },
+  { code: "AED", symbol: "د.إ", name: "UAE Dirham (United Arab Emirates)" },
+  { code: "EUR", symbol: "€", name: "Euro (Germany, France, Spain, Italy, Netherlands, Belgium)" },
+  { code: "PLN", symbol: "zł", name: "Polish Zloty (Poland)" },
+  { code: "CHF", symbol: "Fr", name: "Swiss Franc (Switzerland)" },
+  { code: "SEK", symbol: "kr", name: "Swedish Krona (Sweden)" },
+  { code: "NOK", symbol: "kr", name: "Norwegian Krone (Norway)" },
+  { code: "DKK", symbol: "kr", name: "Danish Krone (Denmark)" },
+  { code: "RUB", symbol: "₽", name: "Russian Ruble (Russia)" },
+  { code: "JPY", symbol: "¥", name: "Japanese Yen (Japan)" },
+  { code: "KRW", symbol: "₩", name: "South Korean Won (South Korea)" },
+  { code: "CNY", symbol: "¥", name: "Chinese Yuan (China)" },
+  { code: "HKD", symbol: "$", name: "Hong Kong Dollar (Hong Kong)" },
+  { code: "SGD", symbol: "$", name: "Singapore Dollar (Singapore)" },
+  { code: "MYR", symbol: "RM", name: "Malaysian Ringgit (Malaysia)" },
+  { code: "IDR", symbol: "Rp", name: "Indonesian Rupiah (Indonesia)" },
+  { code: "THB", symbol: "฿", name: "Thai Baht (Thailand)" },
+  { code: "VND", symbol: "₫", name: "Vietnamese Dong (Vietnam)" },
+  { code: "PHP", symbol: "₱", name: "Philippine Peso (Philippines)" },
+  { code: "BRL", symbol: "R$", name: "Brazilian Real (Brazil)" },
+  { code: "MXN", symbol: "$", name: "Mexican Peso (Mexico)" },
+  { code: "CLP", symbol: "$", name: "Chilean Peso (Chile)" },
+  { code: "ARS", symbol: "$", name: "Argentine Peso (Argentina)" },
+  { code: "NGN", symbol: "₦", name: "Nigerian Naira (Nigeria)" },
+  { code: "KES", symbol: "KSh", name: "Kenyan Shilling (Kenya)" },
+  { code: "ZAR", symbol: "R", name: "South African Rand (South Africa)" },
+  { code: "EGP", symbol: "E£", name: "Egyptian Pound (Egypt)" },
+  { code: "TRY", symbol: "₺", name: "Turkish Lira (Turkey)" },
+  { code: "ILS", symbol: "₪", name: "Israeli Shekel (Israel)" },
+  { code: "SAR", symbol: "﷼", name: "Saudi Riyal (Saudi Arabia)" },
+  { code: "QAR", symbol: "﷼", name: "Qatari Riyal (Qatar)" },
+  { code: "OMR", symbol: "﷼", name: "Omani Rial (Oman)" },
+  { code: "BHD", symbol: ".د.ب", name: "Bahraini Dinar (Bahrain)" },
+  { code: "KWD", symbol: "د.ك", name: "Kuwaiti Dinar (Kuwait)" },
+
+  // Duplicates for legacy/app stability (old code had some repeated currencies by country)
+  { code: "EUR", symbol: "€", name: "Euro (Spain)" },
+  { code: "EUR", symbol: "€", name: "Euro (Italy)" },
+  { code: "EUR", symbol: "€", name: "Euro (Netherlands)" },
+  { code: "EUR", symbol: "€", name: "Euro (Belgium)" },
+  // Only display the symbol and code once per code in UI (Select will group by code)
 ];
 
 const LANGUAGES: { code: string; label: string }[] = [
