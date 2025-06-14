@@ -1,3 +1,4 @@
+
 import React from "react";
 import InvoiceLineItemRow from "./InvoiceLineItemRow";
 import LogoUpload from "./LogoUpload";
@@ -45,6 +46,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
   function addLineItem() {
     onChange({ ...value, lineItems: [...value.lineItems, { ...emptyLineItem }] });
   }
+
+  // --- FIX: Add handleSignatureChange ---
+  function handleSignatureChange(nextSignature: SignatureData) {
+    onChange({ ...value, digitalSignature: nextSignature });
+  }
+  // --------------------------------------
 
   // Date pickers
   const [showIssuePicker, setShowIssuePicker] = React.useState(false);
@@ -338,3 +345,4 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
 };
 
 export default InvoiceForm;
+
