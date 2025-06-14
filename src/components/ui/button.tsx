@@ -1,28 +1,27 @@
-
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-// Modern minimalist: lighter backgrounds, subtlest shadow, calmer outlines.
+// Neumorphism: soften surface, blend backgrounds, layered shadows.
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-background text-foreground", // softer, less contrast
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[1.2rem] text-sm font-medium ring-offset-background transition select-none shadow-[var(--neu-shadow-low)] active:shadow-[var(--neu-inset)] bg-[hsl(var(--card))] text-[hsl(var(--foreground))] border border-border/50 hover:bg-[hsl(var(--background))] hover:shadow-[var(--neu-shadow-high)] active:scale-98 disabled:pointer-events-none disabled:opacity-60 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-background text-foreground border border-border hover:bg-accent hover:text-primary/90 active:bg-muted shadow-sm",
-        destructive: "bg-destructive text-destructive-foreground border-none hover:bg-destructive/90",
-        outline: "border border-border bg-background text-foreground hover:bg-accent",
-        secondary: "bg-secondary text-secondary-foreground border border-secondary hover:bg-secondary/60",
-        ghost: "hover:bg-muted hover:text-foreground",
-        link: "underline text-primary underline-offset-4 hover:text-primary/80",
+        default: "", // Neumorphism built-in.
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-[var(--neu-shadow-low)]",
+        outline: "border border-border bg-background text-foreground hover:bg-[hsl(var(--accent))] hover:shadow-[var(--neu-shadow-high)]",
+        secondary: "bg-secondary text-secondary-foreground border border-secondary hover:shadow-[var(--neu-shadow-high)]",
+        ghost: "bg-transparent shadow-none hover:shadow-[var(--neu-shadow-low)]",
+        link: "underline text-primary underline-offset-4 bg-transparent shadow-none hover:text-primary/80",
       },
       size: {
-        default: "h-10 px-5 py-2",
-        sm: "h-9 px-3 rounded-md",
-        lg: "h-12 px-7 rounded-xl",
-        icon: "h-10 w-10",
+        default: "h-11 px-7 py-2 rounded-[1.2rem]",
+        sm: "h-9 px-4 rounded-md",
+        lg: "h-14 px-10 rounded-[1.6rem]",
+        icon: "h-11 w-11",
       },
     },
     defaultVariants: {
@@ -53,4 +52,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
-

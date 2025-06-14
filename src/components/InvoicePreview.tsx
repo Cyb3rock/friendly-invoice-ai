@@ -245,7 +245,7 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
   // --- END Signature preview logic ---
 
   return (
-    <div className="font-inter bg-white rounded-3xl border border-border/30 shadow-md p-6 min-w-[320px] max-w-lg mx-auto mt-7 mb-10 transition-all duration-200">
+    <div className="font-inter bg-card rounded-[2.5rem] border border-border/25 shadow-[var(--neu-shadow-high)] p-9 min-w-[320px] max-w-lg mx-auto mt-10 mb-14 transition-all duration-200">
       {/* Header */}
       <header className="flex items-start justify-between pb-5 border-b border-border/20 mb-3">
         <div>

@@ -10,8 +10,8 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      // Modern minimalist: lighter bg, subtle shadow, very subtle border, more padding
-      "rounded-2xl border border-border/40 bg-card/80 text-card-foreground shadow-md p-6",
+      // Neumorphism: dual shadow, soft bg, very subtle border
+      "rounded-[1.7rem] border border-border/40 bg-card/95 text-card-foreground shadow-[var(--neu-shadow-high)] p-8",
       className
     )}
     {...props}
