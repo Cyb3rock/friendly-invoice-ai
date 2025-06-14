@@ -2,6 +2,7 @@
 import React from "react";
 import InvoiceForm from "@/components/InvoiceForm";
 import InvoicePreview from "@/components/InvoicePreview";
+import DownloadInvoiceButton from "@/components/DownloadInvoiceButton";
 
 const initialInvoice = {
   invoiceNumber: "1001",
@@ -36,6 +37,8 @@ const initialInvoice = {
   copyright: "",
 };
 
+const PDF_TARGET_ID = "invoice-preview-panel";
+
 const Index = () => {
   const [invoice, setInvoice] = React.useState(initialInvoice);
 
@@ -54,7 +57,8 @@ const Index = () => {
         </section>
         {/* Right: sticky preview */}
         <section className="w-full md:w-3/5 flex flex-col items-center px-0 xs:px-1">
-          <div className="w-full">
+          <DownloadInvoiceButton targetId={PDF_TARGET_ID} />
+          <div className="w-full" id={PDF_TARGET_ID}>
             <InvoicePreview
               data={{
                 ...invoice,
