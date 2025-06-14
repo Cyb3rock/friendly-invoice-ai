@@ -1,8 +1,119 @@
-
 import React from "react";
 import ThankYouFooter from "./ThankYouFooter";
 
-// Add digitalSignature to InvoiceData type
+// --- Translation & currency helpers ---
+
+const TRANSLATIONS: Record<
+  string,
+  Record<string, string>
+> = {
+  en: {
+    invoice: "Invoice",
+    po: "PO",
+    issue: "Issue",
+    due: "Due",
+    from: "From",
+    billTo: "Bill To",
+    description: "Description",
+    qty: "Qty",
+    rate: "Rate",
+    amount: "Amount",
+    subtotal: "Subtotal",
+    tax: "Tax",
+    discount: "Discount",
+    total: "Total",
+    paymentDue: "Payment Due:",
+    paymentMethods: "Payment Methods:",
+    latePenalty: "Late Penalty:",
+    payOnline: "Pay online →",
+    notes: "Notes:",
+    digitalSignature: "Digital Signature",
+    noLogo: "No Logo",
+    noItems: "No items"
+  },
+  es: {
+    invoice: "Factura",
+    po: "OC",
+    issue: "Emisión",
+    due: "Vencimiento",
+    from: "De",
+    billTo: "Facturar a",
+    description: "Descripción",
+    qty: "Cant.",
+    rate: "Precio",
+    amount: "Importe",
+    subtotal: "Subtotal",
+    tax: "Impuesto",
+    discount: "Descuento",
+    total: "Total",
+    paymentDue: "Fecha de pago:",
+    paymentMethods: "Métodos de pago:",
+    latePenalty: "Recargo por demora:",
+    payOnline: "Pagar en línea →",
+    notes: "Notas:",
+    digitalSignature: "Firma digital",
+    noLogo: "Sin logo",
+    noItems: "Sin artículos"
+  },
+  fr: {
+    invoice: "Facture",
+    po: "BC",
+    issue: "Émission",
+    due: "Échéance",
+    from: "De",
+    billTo: "Facturer à",
+    description: "Désignation",
+    qty: "Qté",
+    rate: "Prix",
+    amount: "Montant",
+    subtotal: "Sous-total",
+    tax: "Taxe",
+    discount: "Remise",
+    total: "Total",
+    paymentDue: "Date de paiement :",
+    paymentMethods: "Moyens de paiement :",
+    latePenalty: "Pénalité de retard :",
+    payOnline: "Payer en ligne →",
+    notes: "Notes :",
+    digitalSignature: "Signature numérique",
+    noLogo: "Pas de logo",
+    noItems: "Aucun article"
+  },
+  de: {
+    invoice: "Rechnung",
+    po: "Bestellnr.",
+    issue: "Ausgestellt",
+    due: "Fällig",
+    from: "Von",
+    billTo: "Rechnung an",
+    description: "Artikel",
+    qty: "Menge",
+    rate: "Preis",
+    amount: "Betrag",
+    subtotal: "Zwischensumme",
+    tax: "MwSt.",
+    discount: "Rabatt",
+    total: "Gesamt",
+    paymentDue: "Fällig am:",
+    paymentMethods: "Zahlungsarten:",
+    latePenalty: "Verzugsstrafe:",
+    payOnline: "Online zahlen →",
+    notes: "Hinweise:",
+    digitalSignature: "Digitale Unterschrift",
+    noLogo: "Kein Logo",
+    noItems: "Keine Artikel"
+  },
+};
+
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  USD: "$",
+  EUR: "€",
+  GBP: "£",
+  INR: "₹",
+  CAD: "C$",
+  AUD: "A$",
+};
+
 type InvoiceData = {
   invoiceNumber: string;
   issueDate: string; // formatted
@@ -37,6 +148,8 @@ type InvoiceData = {
   companySlogan?: string;
   copyright?: string;
   digitalSignature?: { type: "drawn"; value: string } | { type: "image"; value: string } | null;
+  currency?: string;
+  language?: string;
 };
 
 type Props = {
@@ -48,6 +161,11 @@ function calcSubtotal(items: InvoiceData["lineItems"]) {
 }
 
 const InvoicePreview: React.FC<Props> = ({ data }) => {
+  const lang = data.language && TRANSLATIONS[data.language] ? data.language : "en";
+  const t = TRANSLATIONS[lang];
+  const currency = data.currency ?? "USD";
+  const symbol = CURRENCY_SYMBOLS[currency] || currency;
+
   const subtotal = calcSubtotal(data.lineItems);
   const taxAmount = +(subtotal * (data.taxRate / 100)).toFixed(2);
   const afterTax = subtotal + taxAmount;
@@ -76,7 +194,7 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
         >
           {signature.value}
         </div>
-        <span className="text-xs text-muted-foreground">Digital Signature</span>
+        <span className="text-xs text-muted-foreground">{t.digitalSignature}</span>
       </div>
     );
   } else if (signature && signature.type === "image" && signature.value) {
@@ -88,7 +206,7 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
           className="h-14 object-contain border rounded shadow-sm bg-white"
           style={{ maxWidth: "180px" }}
         />
-        <span className="text-xs text-muted-foreground">Digital Signature</span>
+        <span className="text-xs text-muted-foreground">{t.digitalSignature}</span>
       </div>
     );
   }
@@ -99,33 +217,33 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
       {/* Header */}
       <header className="flex items-start justify-between pb-6 border-b border-border mb-4">
         <div>
-          <div className="text-2xl font-bold tracking-tighter text-primary">Invoice</div>
+          <div className="text-2xl font-bold tracking-tighter text-primary">{t.invoice}</div>
           <div className="text-xs text-muted-foreground">
             #{data.invoiceNumber || "0001"}
-            {data.poNumber && <span className="ml-4">PO: {data.poNumber}</span>}
+            {data.poNumber && <span className="ml-4">{t.po}: {data.poNumber}</span>}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
-            Issue: {data.issueDate || "--"}
-            <span className="ml-3">Due: {data.dueDate || "--"}</span>
+            {t.issue}: {data.issueDate || "--"}
+            <span className="ml-3">{t.due}: {data.dueDate || "--"}</span>
           </div>
         </div>
         {data.from.logoUrl ? (
           <img src={data.from.logoUrl} alt="Logo" className="h-12 rounded bg-gray-100 border shadow" />
         ) : (
-          <div className="h-12 w-28 flex items-center justify-center bg-gray-100 border rounded text-xs text-muted-foreground font-semibold">No Logo</div>
+          <div className="h-12 w-28 flex items-center justify-center bg-gray-100 border rounded text-xs text-muted-foreground font-semibold">{t.noLogo}</div>
         )}
       </header>
       {/* From/To */}
       <div className="flex flex-col md:flex-row justify-between text-xs gap-4 mb-2">
         <div>
-          <div className="uppercase font-semibold text-foreground/70 mb-1">From</div>
+          <div className="uppercase font-semibold text-foreground/70 mb-1">{t.from}</div>
           <div className="font-bold">{data.from.company || "--"}</div>
           <div>{data.from.address}</div>
           <div>{data.from.phone}</div>
           <div>{data.from.email}</div>
         </div>
         <div>
-          <div className="uppercase font-semibold text-foreground/70 mb-1">Bill To</div>
+          <div className="uppercase font-semibold text-foreground/70 mb-1">{t.billTo}</div>
           <div className="font-bold">{data.to.name || "--"}</div>
           <div>{data.to.address}</div>
           <div>{data.to.phone}</div>
@@ -137,17 +255,17 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
         <table className="w-full border rounded-t overflow-hidden text-sm">
           <thead>
             <tr className="bg-muted/50">
-              <th className="text-left font-semibold px-3 py-2 w-1/2">Description</th>
-              <th className="text-right font-semibold px-3 py-2">Qty</th>
-              <th className="text-right font-semibold px-3 py-2">Rate</th>
-              <th className="text-right font-semibold px-3 py-2">Amount</th>
+              <th className="text-left font-semibold px-3 py-2 w-1/2">{t.description}</th>
+              <th className="text-right font-semibold px-3 py-2">{t.qty}</th>
+              <th className="text-right font-semibold px-3 py-2">{t.rate}</th>
+              <th className="text-right font-semibold px-3 py-2">{t.amount}</th>
             </tr>
           </thead>
           <tbody>
             {data.lineItems.length === 0 && (
               <tr>
                 <td colSpan={4} className="text-center text-muted-foreground py-4">
-                  <em>No items</em>
+                  <em>{t.noItems}</em>
                 </td>
               </tr>
             )}
@@ -155,8 +273,12 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
               <tr key={idx}>
                 <td className="px-3 py-2">{item.description}</td>
                 <td className="text-right px-3 py-2">{item.quantity}</td>
-                <td className="text-right px-3 py-2">{item.rate.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
                 <td className="text-right px-3 py-2">
+                  {symbol}
+                  {item.rate.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </td>
+                <td className="text-right px-3 py-2">
+                  {symbol}
                   {(item.quantity * item.rate).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </td>
               </tr>
@@ -167,21 +289,21 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
           </tbody>
           <tfoot className="text-base">
             <tr>
-              <td colSpan={3} className="text-right px-3 py-2">Subtotal</td>
-              <td className="text-right px-3 py-2 font-medium">{subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+              <td colSpan={3} className="text-right px-3 py-2">{t.subtotal}</td>
+              <td className="text-right px-3 py-2 font-medium">{symbol}{subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
             </tr>
             <tr>
-              <td colSpan={3} className="text-right px-3 py-2">Tax ({data.taxRate}%)</td>
-              <td className="text-right px-3 py-2">{taxAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+              <td colSpan={3} className="text-right px-3 py-2">{t.tax} ({data.taxRate}%)</td>
+              <td className="text-right px-3 py-2">{symbol}{taxAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
             </tr>
             <tr>
-              <td colSpan={3} className="text-right px-3 py-2">Discount</td>
-              <td className="text-right px-3 py-2">-{data.discount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+              <td colSpan={3} className="text-right px-3 py-2">{t.discount}</td>
+              <td className="text-right px-3 py-2">-{symbol}{data.discount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
             </tr>
             <tr>
-              <td colSpan={3} className="text-right px-3 py-2 font-semibold text-primary">Total</td>
+              <td colSpan={3} className="text-right px-3 py-2 font-semibold text-primary">{t.total}</td>
               <td className="text-right px-3 py-2 font-bold text-primary text-lg">
-                {afterDiscount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                {symbol}{afterDiscount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
               </td>
             </tr>
           </tfoot>
@@ -190,16 +312,16 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
       {/* Payment info */}
       <div className="mt-6 mb-2">
         <div className="flex gap-5 items-center flex-wrap">
-          <span className="font-semibold text-sm">Payment Due:</span>
+          <span className="font-semibold text-sm">{t.paymentDue}</span>
           <span>{data.paymentDue}</span>
         </div>
         <div className="flex gap-2 mt-1 items-center flex-wrap">
-          <span className="font-semibold text-sm">Payment Methods:</span>
+          <span className="font-semibold text-sm">{t.paymentMethods}</span>
           <span>{data.paymentMethods}</span>
         </div>
         {data.latePenalty && (
           <div className="text-xs mt-1">
-            <span className="font-semibold">Late Penalty:</span> {data.latePenalty}
+            <span className="font-semibold">{t.latePenalty}</span> {data.latePenalty}
           </div>
         )}
         {data.onlinePayment && (
@@ -210,14 +332,14 @@ const InvoicePreview: React.FC<Props> = ({ data }) => {
               rel="noopener noreferrer"
               className="inline-block font-medium text-primary underline hover:text-blue-500 transition"
             >
-              Pay online →
+              {t.payOnline}
             </a>
           </div>
         )}
       </div>
       {data.notes && (
         <div className="mt-2 border-t border-muted-foreground/10 pt-3 text-sm text-muted-foreground">
-          <div className="font-medium text-foreground/80 mb-1">Notes:</div>
+          <div className="font-medium text-foreground/80 mb-1">{t.notes}</div>
           <div>{data.notes}</div>
         </div>
       )}

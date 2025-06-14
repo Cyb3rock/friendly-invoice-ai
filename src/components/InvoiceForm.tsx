@@ -20,6 +20,24 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
+const CURRENCIES: { code: string; symbol: string; name: string }[] = [
+  { code: "USD", symbol: "$", name: "US Dollar" },
+  { code: "EUR", symbol: "€", name: "Euro" },
+  { code: "GBP", symbol: "£", name: "British Pound" },
+  { code: "INR", symbol: "₹", name: "Indian Rupee" },
+  { code: "CAD", symbol: "C$", name: "Canadian Dollar" },
+  { code: "AUD", symbol: "A$", name: "Australian Dollar" },
+  // Add more as needed
+];
+
+const LANGUAGES: { code: string; label: string }[] = [
+  { code: "en", label: "English" },
+  { code: "es", label: "Español" },
+  { code: "fr", label: "Français" },
+  { code: "de", label: "Deutsch" },
+  // Add more as needed
+];
+
 type InvoiceLineItem = {
   description: string;
   quantity: number;
@@ -53,15 +71,21 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
     onChange({ ...value, lineItems: [...value.lineItems, { ...emptyLineItem }] });
   }
 
-  // --- FIX: Add handleSignatureChange ---
   function handleSignatureChange(nextSignature: SignatureData) {
     onChange({ ...value, digitalSignature: nextSignature });
   }
-  // --------------------------------------
 
   // Date pickers
   const [showIssuePicker, setShowIssuePicker] = React.useState(false);
   const [showDuePicker, setShowDuePicker] = React.useState(false);
+
+  // Currency and Language
+  const handleCurrencyChange = (currency: string) => {
+    onChange({ ...value, currency });
+  };
+  const handleLanguageChange = (language: string) => {
+    onChange({ ...value, language });
+  };
 
   // Tall fields for payment details
   return (
@@ -72,6 +96,49 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ value, onChange }) => {
       }}
       autoComplete="off"
     >
+      {/* Currency & Language selection */}
+      <div className="flex flex-col sm:flex-row gap-2 mb-2">
+        <div className="flex-1">
+          <label className="text-sm font-medium text-muted-foreground mb-1">
+            Currency
+          </label>
+          <Select
+            value={value.currency || "USD"}
+            onValueChange={handleCurrencyChange}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select currency" />
+            </SelectTrigger>
+            <SelectContent>
+              {CURRENCIES.map(cur => (
+                <SelectItem key={cur.code} value={cur.code}>
+                  {cur.symbol} - {cur.name} ({cur.code})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex-1">
+          <label className="text-sm font-medium text-muted-foreground mb-1">
+            Language
+          </label>
+          <Select
+            value={value.language || "en"}
+            onValueChange={handleLanguageChange}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select language" />
+            </SelectTrigger>
+            <SelectContent>
+              {LANGUAGES.map(lang => (
+                <SelectItem key={lang.code} value={lang.code}>
+                  {lang.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
       {/* Top: logo upload */}
       <LogoUpload
         logoUrl={value.from.logoUrl}
